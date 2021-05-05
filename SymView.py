@@ -4,11 +4,11 @@ import aggdraw
 import random
 import timeit
 
-import SymRender
-
 from PIL import Image, ImageDraw, ImageTk
 from math import sin, cos, pi
-from Render import Spiro
+
+import Render
+
 def my_callback(var, indx, mode):
 	print(var)
 	#print("Traced variable {}".format(var.get()))
@@ -117,7 +117,7 @@ class SymView:
 		self.Draw()
 
 	def Draw(self):
-		pim = SymRender.SymmetryWall(self.Parameters, self.Vars, self.Colors)
+		pim = Render.SymmetryWall(self.Parameters, self.Vars, self.Colors)
 		self.SaveImage(pim)
 		self.photo = ImageTk.PhotoImage(pim)
 		self.im = self.canvas.create_image(0,0, image=self.photo, anchor='nw')
