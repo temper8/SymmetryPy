@@ -6,6 +6,7 @@ import timeit
 import time
 import cairo
 import numpy as np
+from benchmark import exec_time
 
 from PIL import Image, ImageDraw, ImageTk
 from cairo import ImageSurface, Context, FORMAT_ARGB32
@@ -21,14 +22,15 @@ def avg_clr(c1, c2, d, alpha):
 def GeneratePalette2(colors, clr_num):
 	N = (clr_num+30) * 200
 	pal = np.zeros((N, 4), dtype=np.uint8)
-	for i in range(0, clr_num + 30):
+	for i in range(0, clr_num):
 		c1 = colors[i]
-		c2 = colors[i+1]
+		c2 = colors[(i+1)%clr_num]
 		for j in range(0, 200):
 			d = float(j)/200
 			pal[i*200+j] = avg_clr(c1,c2,d,225)
 	return pal		
 
+@exec_time()
 def SymmetryWall(parameters, vars, colors):
 	w = parameters["Width"]
 	h = parameters["Height"]
@@ -44,14 +46,14 @@ def SymmetryWall(parameters, vars, colors):
 	X = np.linspace(0, 3*np.pi, w)
 	Y = np.linspace(0, 3*np.pi*h/w, h)
 	x, y = np.meshgrid(X, Y)
-	Z = W(0, 1, x, y)*cos(2*np.pi*t) + W(2, 0, x, y)*sin(2*np.pi*t) + W(3, 1, x, y)*sin(4*np.pi*t)
+	Z = W(0, 1, x, y)*cos(2*np.pi*t) + W(2, 1, x, y)*sin(2*np.pi*t) + W(3, 2, x, y)*sin(4*np.pi*t)
 
 	clr_num = 54
 	Re = (np.abs(Z) + 1.5)/3
 	Im = (np.angle(Z) + np.pi)/np.pi/2
 	#print(np.amax(A))
-	U = (clr_num*Re*200).astype(int)
-	V = (clr_num*Im*200).astype(int)
+	U = (clr_num*Re*clr_num).astype(int)
+	V = (clr_num*Im*clr_num).astype(int)
 
 	pal = GeneratePalette2(colors, clr_num)
 
@@ -60,6 +62,7 @@ def SymmetryWall(parameters, vars, colors):
 	for i in range(0,h):
 		for j in range(0,w):
 			data[i][j] =pal[V[i,j]]
+			#data[i][j] =pal[V[i,j] + 10 *U[i,j]]
 	pim = Image.fromarray(data, 'RGBA')
 	return pim
 
