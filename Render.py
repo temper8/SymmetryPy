@@ -4,12 +4,12 @@ import aggdraw
 import random
 import timeit
 import time
-import cairo
+#import cairo
 import numpy as np
 from benchmark import exec_time
 
 from PIL import Image, ImageDraw, ImageTk
-from cairo import ImageSurface, Context, FORMAT_ARGB32
+#from cairo import ImageSurface, Context, FORMAT_ARGB32
 from math import sin, cos, pi
 #from shapely.geometry import LineString
 
