@@ -1,8 +1,10 @@
 import tkinter as tk
-from SymView import SymView
+from App import App
 
-root = tk.Tk() 
+def main():
+    root = tk.Tk() 
+    m = App(root)
+    root.mainloop()
 
-m = SymView(root)
-
-root.mainloop()  
+if __name__ == '__main__':
+    main()
