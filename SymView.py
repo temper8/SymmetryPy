@@ -15,7 +15,7 @@ def my_callback(var, indx, mode):
 
 class SymView:
 
-	Parameters ={"Width": 720, "Height": 1280, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
+	Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
 	Vars = {}
 
 	def UpdateVar(self, var):
