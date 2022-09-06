@@ -88,8 +88,8 @@ class SymView:
                  onvalue=1, offvalue=0)
 		chk1.pack(side = 'top')
 
-		sld = Slider(frame_b, parameters['Time'], self.Draw)
-		sld.pack()
+		Slider(frame_b, parameters['Time'], self.Draw).pack()
+		Slider(frame_b, parameters['Radius'], self.Draw).pack()
 
 
 

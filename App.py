@@ -5,7 +5,14 @@ class App:
     Parameters ={
         "Width": 800, 
         "Height": 700,
-        "Radius" : 350,
+        "Radius" : {
+            'name' : 'radius',
+            'widget' : 'slider',
+            'value' : 1.0,
+            'type' : 'double',
+            'label' : 'Radius',
+            'interval' : [1.0, 10.0, 0.1]
+        },
         "Shift": {
             'value' : 1.0
         },

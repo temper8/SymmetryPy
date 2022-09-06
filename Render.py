@@ -34,7 +34,7 @@ def GeneratePalette2(colors, clr_num):
 def SymmetryWall(parameters, vars, colors):
 	w = parameters["Width"]
 	h = parameters["Height"]
-	r = parameters["Radius"]
+	r = parameters["Radius"]['value']
 	t = parameters["Time"]['value']
 	shift = math.pi * parameters["Shift"]['value']
 	#M = vars["M"].get()
@@ -43,8 +43,8 @@ def SymmetryWall(parameters, vars, colors):
 	#K2 = vars["K2"].get()
 	#pim = Image.new('RGBA', (w, h), (0, 0, 0, 255))
 
-	X = np.linspace(0, 3*np.pi, w)
-	Y = np.linspace(0, 3*np.pi*h/w, h)
+	X = np.linspace(0, r*np.pi, w)
+	Y = np.linspace(0, r*np.pi*h/w, h)
 	x, y = np.meshgrid(X, Y)
 	Z = W(0, 1, x, y)*cos(2*np.pi*t) + W(2, 1, x, y)*sin(2*np.pi*t) + W(3, 2, x, y)*sin(4*np.pi*t)
 
