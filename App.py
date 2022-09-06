@@ -3,8 +3,20 @@ from SymView import SymView
 class App:
 
     Parameters ={
-        "Width": 900, 
-        "Height": 500,
+        "Width": 800, 
+        "Height": 700,
+        "Radius" : 350,
+        "Shift": {
+            'value' : 1.0
+        },
+        "Time" : {
+            'name' : 'time',
+            'widget' : 'slider',
+            'value' : 0.0,
+            'type' : 'double',
+            'label' : 'Time',
+            'interval' : [0.0, 1.0, 0.01]
+        }
         }
 
     def __init__(self, root):
@@ -14,4 +26,4 @@ class App:
         h = self.Parameters["Height"]
         root.minsize(w, h)
 
-        SymView(root)
+        SymView(root, self.Parameters)

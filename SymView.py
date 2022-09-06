@@ -13,28 +13,50 @@ def my_callback(var, indx, mode):
 	print(var)
 	#print("Traced variable {}".format(var.get()))
 
+class Slider(tk.Frame):
+
+	def update_var(self):
+		print(self.var.get())		
+		self.variable['value'] = self.var.get()
+		if self.call_back:
+			self.call_back()
+
+	def __init__(self, master, v, call_back) -> None:
+		super().__init__(master)
+		self.call_back = call_back
+		self.variable = v
+		self.var = tk.DoubleVar(name = v['name'])
+		self.var.trace_add('write', lambda var, indx, mode: self.update_var())
+		label = tk.Label(master=self, text=v['label'])
+		label.pack(side = 'top')		
+		slider = tk.Scale( self, variable = self.var, orient = tk.HORIZONTAL, from_=v['interval'][0], to=v['interval'][1], resolution=v['interval'][2], length = 250 )
+		slider.pack(anchor=tk.CENTER)
+
+
 class SymView:
 
-	Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
+	#Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
 	Vars = {}
 
 	def UpdateVar(self, var):
-		print(var + " = {}".format(self.Vars[var].get()))
-		self.Draw()
+		#print(var + " = {}".format(self.Vars[var].get()))
+		#self.Draw()
+		pass
 
 	def make_slider(self, parent, var, interval, label, cmd = None):
 		#var = tk.DoubleVar(name = VarName)
 		self.Vars[var._name] = var
 		var.trace_add('write', lambda var, indx, mode: self.UpdateVar(var))
 		#res = (interval[1] - interval[0])/100
-		slider = tk.Scale( parent, variable = var, orient = tk.HORIZONTAL, from_=interval[0], to=interval[1], resolution=interval[2], length = 250, command = cmd )
+		slider = tk.Scale( parent, variable = var, orient = tk.HORIZONTAL, from_=interval[0], to=interval[1], resolution=interval[2], length = 250)
 		slider.pack(anchor=tk.CENTER)
 		label = tk.Label(master=parent, text=label)
 		label.pack(side = 'top')
 		return var		
 
-	def __init__(self, root):
+	def __init__(self, root, parameters):
 		self.Colors = self.GeneratePalette(5000)
+		self.Parameters = parameters
 		w = self.Parameters["Width"]
 		h = self.Parameters["Height"]
 		frame_a = tk.Frame()
@@ -42,30 +64,34 @@ class SymView:
 		self.canvas = tk.Canvas(frame_a, width=w, height=h)
 		self.canvas.pack()
 
-		v = tk.IntVar(name = "K")
-		self.make_slider( frame_b, label ="K", var = v, interval = (1, 30, 1))
+		#v = tk.IntVar(name = "K")
+		#self.make_slider( frame_b, label ="K", var = v, interval = (1, 30, 1))
 
-		v = tk.IntVar(name = "K1")
-		self.make_slider( frame_b, label ="K1", var = v, interval = (-20, 20, 1))
+		#v = tk.IntVar(name = "K1")
+		#self.make_slider( frame_b, label ="K1", var = v, interval = (-20, 20, 1))
 
-		v = tk.IntVar(name = "K2")
-		self.make_slider( frame_b, label ="K2", var = v, interval = (1, 30, 1))
+		#v = tk.IntVar(name = "K2")
+		#self.make_slider( frame_b, label ="K2", var = v, interval = (1, 30, 1))
 
-		v = tk.IntVar(name = "M")
-		self.make_slider( frame_b, label ="Number of lines", var = v, interval = (50, 10000, 10))
+		#v = tk.IntVar(name = "M")
+		#self.make_slider( frame_b, label ="Number of lines", var = v, interval = (50, 10000, 10))
 
-		v = tk.DoubleVar(name = "Shift")
-		self.make_slider( frame_b, label ="shift slider", var = v, interval = (0.01, 1.0, 0.01))
+		#v = tk.DoubleVar(name = "Shift")
+		#self.make_slider( frame_b, label ="shift slider", var = v, interval = (0.01, 1.0, 0.01))
 
-		v = tk.DoubleVar(name = "Time")
-		self.make_slider( frame_b, label ="time slider", var = v, interval = (0.0, 1.0, 0.01))
-
+		#v = tk.DoubleVar(name = "Time")
+		#self.make_slider( frame_b, label ="time slider", var = v, interval = (0.0, 1.0, 0.01))
 		self.saveFlag = tk.BooleanVar()
 		self.saveFlag.set(0)
 		chk1 = tk.Checkbutton(frame_b, text="Save",
                  variable=self.saveFlag,
                  onvalue=1, offvalue=0)
 		chk1.pack(side = 'top')
+
+		sld = Slider(frame_b, parameters['Time'], self.Draw)
+		sld.pack()
+
+
 
 		self.label_fps = tk.Label(master=frame_b, text="fps")
 		self.label_fps.pack(side = 'top')

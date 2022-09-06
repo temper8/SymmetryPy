@@ -35,12 +35,12 @@ def SymmetryWall(parameters, vars, colors):
 	w = parameters["Width"]
 	h = parameters["Height"]
 	r = parameters["Radius"]
-	t = vars["Time"].get()
-	shift = math.pi * vars["Shift"].get()
-	M = vars["M"].get()
-	K = vars["K"].get()
-	K1 = vars["K1"].get()
-	K2 = vars["K2"].get()
+	t = parameters["Time"]['value']
+	shift = math.pi * parameters["Shift"]['value']
+	#M = vars["M"].get()
+	#K = vars["K"].get()
+	#K1 = vars["K1"].get()
+	#K2 = vars["K2"].get()
 	#pim = Image.new('RGBA', (w, h), (0, 0, 0, 255))
 
 	X = np.linspace(0, 3*np.pi, w)
