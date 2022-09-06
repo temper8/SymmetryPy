@@ -17,11 +17,11 @@ def avg_clr(c1, c2, d, alpha):
 	r = int(c1[0]*(1-d) + c2[0]*d)
 	g = int(c1[1]*(1-d) + c2[1]*d)
 	b = int(c1[2]*(1-d) + c2[2]*d)
-	return (r,g,b,alpha)
+	return int.from_bytes(bytearray([r,g,b,alpha]), "big") 
 
 def GeneratePalette2(colors, clr_num):
 	N = (clr_num+30) * 200
-	pal = np.zeros((N, 4), dtype=np.uint8)
+	pal = np.zeros(N, dtype=np.uint32)
 	for i in range(0, clr_num):
 		c1 = colors[i]
 		c2 = colors[(i+1)%clr_num]
@@ -57,13 +57,7 @@ def SymmetryWall(parameters, vars, colors):
 
 	pal = GeneratePalette2(colors, clr_num)
 
-	data = np.zeros((h, w, 4), dtype=np.uint8)
-
-	for i in range(0,h):
-		for j in range(0,w):
-			data[i][j] =pal[V[i,j]]
-			#data[i][j] =pal[V[i,j] + 10 *U[i,j]]
-	pim = Image.fromarray(data, 'RGBA')
+	pim = Image.fromarray(pal[V], 'RGBA')
 	return pim
 
 def E(n, m, x, y):
