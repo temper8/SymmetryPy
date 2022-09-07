@@ -155,7 +155,7 @@ class SymView:
 		pim = Render.SymmetryWall(self.Parameters, self.palette)
 		#self.SaveImage(pim)
 		self.photo = ImageTk.PhotoImage(pim)
-		self.im = self.canvas.create_image(0,0, image=self.photo, anchor='nw')
+		self.canvas.create_image(0,0, image=self.photo, anchor='nw')
 
 
 	def SaveImage(self, pim):
