@@ -140,12 +140,13 @@ class SymView:
 	def make_palette(self, clr_num):
 		N = clr_num * 100
 		pal = np.zeros(N, dtype=np.uint32)
-		for i in range(0, clr_num):
-			c1 = self.Colors[i]
-			c2 = self.Colors[(i+1)%clr_num]
+		clr = self.Colors[0:clr_num]
+		c2 = clr[-1]
+		for i, c1 in enumerate(clr):
 			for j in range(0, 100):
 				d = float(j)/100
-				pal[i*100+j] = avg_clr(c1,c2,d,225)
+				pal[i*100+j] = avg_clr(c2,c1,d,225)
+			c2 = c1
 		return pal	
 
 	def Draw(self):
