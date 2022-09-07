@@ -38,49 +38,21 @@ class SymView:
 	#Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
 	Vars = {}
 
-	def UpdateVar(self, var):
-		#print(var + " = {}".format(self.Vars[var].get()))
-		#self.Draw()
-		pass
-
-	def make_slider(self, parent, var, interval, label, cmd = None):
-		#var = tk.DoubleVar(name = VarName)
-		self.Vars[var._name] = var
-		var.trace_add('write', lambda var, indx, mode: self.UpdateVar(var))
-		#res = (interval[1] - interval[0])/100
-		slider = tk.Scale( parent, variable = var, orient = tk.HORIZONTAL, from_=interval[0], to=interval[1], resolution=interval[2], length = 250)
-		slider.pack(anchor=tk.CENTER)
-		label = tk.Label(master=parent, text=label)
-		label.pack(side = 'top')
-		return var		
-
 	def __init__(self, root, parameters):
 		self.Colors = self.GeneratePalette(5000)
 		self.Parameters = parameters
 		w = self.Parameters["Width"]
 		h = self.Parameters["Height"]
-		frame_a = tk.Frame()
-		frame_b = tk.Frame()
+		frame_a = tk.Frame(root)
+		frame_b = tk.Frame(root)
+		frame_a.grid(row=0, column=0)
+		frame_b.grid(row=0, column=1)
+		root.columnconfigure(0, weight=1)    
+		root.rowconfigure(0, weight=1)
+
 		self.canvas = tk.Canvas(frame_a, width=w, height=h)
 		self.canvas.pack()
 
-		#v = tk.IntVar(name = "K")
-		#self.make_slider( frame_b, label ="K", var = v, interval = (1, 30, 1))
-
-		#v = tk.IntVar(name = "K1")
-		#self.make_slider( frame_b, label ="K1", var = v, interval = (-20, 20, 1))
-
-		#v = tk.IntVar(name = "K2")
-		#self.make_slider( frame_b, label ="K2", var = v, interval = (1, 30, 1))
-
-		#v = tk.IntVar(name = "M")
-		#self.make_slider( frame_b, label ="Number of lines", var = v, interval = (50, 10000, 10))
-
-		#v = tk.DoubleVar(name = "Shift")
-		#self.make_slider( frame_b, label ="shift slider", var = v, interval = (0.01, 1.0, 0.01))
-
-		#v = tk.DoubleVar(name = "Time")
-		#self.make_slider( frame_b, label ="time slider", var = v, interval = (0.0, 1.0, 0.01))
 		self.saveFlag = tk.BooleanVar()
 		self.saveFlag.set(0)
 		chk1 = tk.Checkbutton(frame_b, text="Save",
@@ -112,8 +84,7 @@ class SymView:
 		tk.Radiobutton(frame_b, text="IggDraw", variable=self.RenderVar, value = 0, command=lambda : self.update()).pack(side="top")
 		tk.Radiobutton(frame_b, text="Cairo", variable=self.RenderVar, value = 1, command=lambda : self.update()).pack(side="top")
 
-		frame_a.pack(side="left")
-		frame_b.pack(side="left")
+
 		#self.spiro = Spiro(self.Parameters)  
 		self.Draw()
 
