@@ -38,20 +38,22 @@ class SymView:
 	#Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
 	Vars = {}
 
-	def __init__(self, root, parameters):
+	def __init__(self, master, parameters):
 		self.Colors = self.GeneratePalette(5000)
 		self.Parameters = parameters
 		w = self.Parameters["Width"]
 		h = self.Parameters["Height"]
-		frame_a = tk.Frame(root)
-		frame_b = tk.Frame(root)
-		frame_a.grid(row=0, column=0)
+		#frame_a = tk.Frame(master)
+		frame_b = tk.Frame(master)
+		#frame_a.grid(row=0, column=0)
 		frame_b.grid(row=0, column=1)
-		root.columnconfigure(0, weight=1)    
-		root.rowconfigure(0, weight=1)
+		master.columnconfigure(0, weight=1)    
+		master.rowconfigure(0, weight=1)
 
-		self.canvas = tk.Canvas(frame_a, width=w, height=h)
-		self.canvas.pack()
+		self.canvas = tk.Canvas(master)
+
+		self.canvas.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W, pady=4, padx=4)
+		self.canvas.bind('<Configure>', self.canvas_resize)
 
 		self.saveFlag = tk.BooleanVar()
 		self.saveFlag.set(0)
@@ -86,6 +88,15 @@ class SymView:
 
 
 		#self.spiro = Spiro(self.Parameters)  
+		self.Draw()
+
+	def canvas_resize(self, event):
+		print('canvas_resize')
+		w = event.width
+		h = event.height
+		self.Parameters["Width"] = w 
+		self.Parameters["Height"] = h		
+		print (f'width  = {w}, height = {h}')		
 		self.Draw()
 
 	def update(self):
