@@ -29,8 +29,8 @@ class App:
     def __init__(self, root):
         root.title("Wave Generator")
 
-        w = self.Parameters["Width"]
-        h = self.Parameters["Height"]
-        root.minsize(w, h)
+        #w = self.Parameters["Width"]
+        #h = self.Parameters["Height"]
+        root.minsize(800, 450)
 
         SymView(root, self.Parameters)
