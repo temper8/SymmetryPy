@@ -6,6 +6,7 @@ import timeit
 
 from PIL import Image, ImageDraw, ImageTk
 from math import sin, cos, pi
+import numpy as np
 
 import Render
 
@@ -33,6 +34,13 @@ class Slider(tk.Frame):
 		slider.pack(anchor=tk.CENTER)
 
 
+
+def avg_clr(c1, c2, d, alpha):
+	r = int(c1[0]*(1-d) + c2[0]*d)
+	g = int(c1[1]*(1-d) + c2[1]*d)
+	b = int(c1[2]*(1-d) + c2[2]*d)
+	return int.from_bytes(bytearray([r,g,b,alpha]), "big") 
+
 class SymView:
 
 	#Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
@@ -43,10 +51,11 @@ class SymView:
 		self.Parameters = parameters
 		w = self.Parameters["Width"]
 		h = self.Parameters["Height"]
-		#frame_a = tk.Frame(master)
+		self.palette = None
+
 		frame_b = tk.Frame(master)
-		#frame_a.grid(row=0, column=0)
 		frame_b.grid(row=0, column=1)
+
 		master.columnconfigure(0, weight=1)    
 		master.rowconfigure(0, weight=1)
 
@@ -65,6 +74,7 @@ class SymView:
 		Slider(frame_b, parameters['Time'], self.Draw).pack()
 		Slider(frame_b, parameters['Radius'], self.Draw).pack()
 
+		
 
 
 		self.label_fps = tk.Label(master=frame_b, text="fps")
@@ -121,12 +131,29 @@ class SymView:
 		return Colors		
 
 	def UpdatePalette(self):
-		self.spiro.GeneratePalette()
+		self.Colors = self.GeneratePalette(5000)
+		self.palette = None
 		self.Draw()
 
+
+
+	def make_palette(self, clr_num):
+		N = clr_num * 200
+		pal = np.zeros(N, dtype=np.uint32)
+		for i in range(0, clr_num):
+			c1 = self.Colors[i]
+			c2 = self.Colors[(i+1)%clr_num]
+			for j in range(0, 200):
+				d = float(j)/200
+				pal[i*200+j] = avg_clr(c1,c2,d,225)
+		return pal	
+
 	def Draw(self):
-		pim = Render.SymmetryWall(self.Parameters, self.Vars, self.Colors)
-		self.SaveImage(pim)
+		if self.palette is None:
+			self.palette = self.make_palette(16)
+
+		pim = Render.SymmetryWall(self.Parameters, self.palette)
+		#self.SaveImage(pim)
 		self.photo = ImageTk.PhotoImage(pim)
 		self.im = self.canvas.create_image(0,0, image=self.photo, anchor='nw')
 

@@ -31,7 +31,7 @@ def GeneratePalette2(colors, clr_num):
 	return pal		
 
 @exec_time()
-def SymmetryWall(parameters, vars, colors):
+def SymmetryWall(parameters, palette):
 	w = parameters["Width"]
 	h = parameters["Height"]
 	r = parameters["Radius"]['value']
@@ -48,16 +48,17 @@ def SymmetryWall(parameters, vars, colors):
 	x, y = np.meshgrid(X, Y)
 	Z = W(0, 1, x, y)*cos(2*np.pi*t) + W(2, 1, x, y)*sin(2*np.pi*t) + W(3, 2, x, y)*sin(4*np.pi*t)
 
-	clr_num = 54
+	clr_num = len(palette)-1
+	print(clr_num)
 	Re = (np.abs(Z) + 1.5)/3
-	Im = (np.angle(Z) + np.pi)/np.pi/2
+	Im = (np.angle(Z)/np.pi + 1)/2
 	#print(np.amax(A))
-	U = (clr_num*Re*clr_num).astype(int)
-	V = (clr_num*Im*clr_num).astype(int)
+	#U = (clr_num*Re).astype(int)
+	V = (clr_num*Im).astype(int)
 
-	pal = GeneratePalette2(colors, clr_num)
+	#pal = GeneratePalette2(colors, clr_num)
 
-	pim = Image.fromarray(pal[V], 'RGBA')
+	pim = Image.fromarray(palette[V], 'RGBA')
 	return pim
 
 def E(n, m, x, y):
