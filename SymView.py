@@ -41,17 +41,80 @@ def avg_clr(c1, c2, d, alpha):
 	b = int(c1[2]*(1-d) + c2[2]*d)
 	return int.from_bytes(bytearray([r,g,b,alpha]), "big") 
 
+class CanvasView(tk.Canvas):
+	def __init__(self, master, parameters ) -> None:
+		super().__init__(master)
+		self.bind('<Configure>', self.resize)
+		self.palette_generator = PaletteGenerator()
+		self.Parameters = parameters
+		self.palette = None
+
+	def update_palette(self):
+		self.palette_generator = self.GeneratePalette(5000)
+		self.palette = None
+		self.draw()
+
+	def resize(self, event):
+		print('canvas_resize')
+		w = event.width
+		h = event.height
+		self.Parameters["Width"] = w 
+		self.Parameters["Height"] = h		
+		print (f'width  = {w}, height = {h}')		
+		self.draw()
+
+	def draw(self):
+		if self.palette is None:
+			self.palette = self.palette_generator.make_palette(16)
+
+		pim = Render.SymmetryWall(self.Parameters, self.palette)
+		#self.SaveImage(pim)
+		self.photo = ImageTk.PhotoImage(pim)
+		self.create_image(0,0, image=self.photo, anchor='nw')
+
+class PaletteGenerator():
+	COLORS_NUMBER = 5000
+	def __init__(self) -> None:
+		self.Colors = self.GeneratePalette(self.COLORS_NUMBER)
+
+	def GeneratePalette(self, clrs_number):
+		bi = 64.0/256
+		Colors = []
+		for i in range(0, clrs_number):
+			alpha = 30
+			r = (random.random()*(1.0 - bi) + bi)
+			g = (random.random()*(1.0 - bi) + bi)
+			b = (random.random()*(1.0 - bi) + bi)
+			m = 1 #max([r,g,b])
+			#print(m)
+			r = int(r/m*256)
+			g = int(g/m*256)
+			b = int(b/m*256)
+			# print(r,g,b)
+			Colors.append((r, g, b))
+		return Colors
+	
+	def make_palette(self, clr_num):
+		N = clr_num * 100
+		pal = np.zeros(N, dtype=np.uint32)
+		clr = self.Colors[0:clr_num]
+		for i, (c1, c2) in enumerate(zip(clr, clr[-1:] + clr[:-1])):
+			for j in range(0, 100):
+				d = float(j)/100
+				pal[i*100+j] = avg_clr(c2,c1,d,225)
+			#c2 = c1
+		return pal	
+		
 class SymView:
 
 	#Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
 	Vars = {}
 
 	def __init__(self, master, parameters):
-		self.Colors = self.GeneratePalette(5000)
 		self.Parameters = parameters
 		w = self.Parameters["Width"]
 		h = self.Parameters["Height"]
-		self.palette = None
+		#self.palette = None
 
 		frame_b = tk.Frame(master)
 		frame_b.grid(row=0, column=1)
@@ -59,10 +122,10 @@ class SymView:
 		master.columnconfigure(0, weight=1)    
 		master.rowconfigure(0, weight=1)
 
-		self.canvas = tk.Canvas(master)
+		self.canvas_view = CanvasView(master, parameters)
 
-		self.canvas.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W, pady=4, padx=4)
-		self.canvas.bind('<Configure>', self.canvas_resize)
+		self.canvas_view.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W, pady=4, padx=4)
+
 
 		self.saveFlag = tk.BooleanVar()
 		self.saveFlag.set(0)
@@ -71,8 +134,8 @@ class SymView:
                  onvalue=1, offvalue=0)
 		chk1.pack(side = 'top')
 
-		Slider(frame_b, parameters['Time'], self.Draw).pack()
-		Slider(frame_b, parameters['Radius'], self.Draw).pack()
+		Slider(frame_b, parameters['Time'], self.canvas_view.draw).pack()
+		Slider(frame_b, parameters['Radius'], self.canvas_view.draw).pack()
 
 		
 
@@ -86,7 +149,7 @@ class SymView:
 		tk.Button(frame_b, text = " start ",  command = self.start).pack(side="top")
 		tk.Button(frame_b, text = " stop ",  command = self.stop).pack(side="top")
 		tk.Button(frame_b, text = " plus ",  command = self.plus).pack(side="top")
-		tk.Button(frame_b, text = " Color palette ",  command = self.UpdatePalette).pack(side="top")
+		tk.Button(frame_b, text = " Color palette ",  command = self.canvas_view.update_palette).pack(side="top")
 		
 		#self.draw_init()
 		
@@ -98,65 +161,11 @@ class SymView:
 
 
 		#self.spiro = Spiro(self.Parameters)  
-		self.Draw()
-
-	def canvas_resize(self, event):
-		print('canvas_resize')
-		w = event.width
-		h = event.height
-		self.Parameters["Width"] = w 
-		self.Parameters["Height"] = h		
-		print (f'width  = {w}, height = {h}')		
-		self.Draw()
+		self.canvas_view.draw()
 
 	def update(self):
 		t = self.ani_count/400
 		#self.draw(t)
-
-	def GeneratePalette(self, COLORS_NUMBER):
-		bi = 64.0/256
-		Colors = []
-		for i in range(0, COLORS_NUMBER):
-			alpha = 30
-			r = (random.random()*(1.0 - bi) + bi)
-			g = (random.random()*(1.0 - bi) + bi)
-			b = (random.random()*(1.0 - bi) + bi)
-			m = 1 #max([r,g,b])
-			#print(m)
-			r = int(r/m*256)
-			g = int(g/m*256)
-			b = int(b/m*256)
-			# print(r,g,b)
-			Colors.append((r, g, b))
-		return Colors		
-
-	def UpdatePalette(self):
-		self.Colors = self.GeneratePalette(5000)
-		self.palette = None
-		self.Draw()
-
-
-
-	def make_palette(self, clr_num):
-		N = clr_num * 100
-		pal = np.zeros(N, dtype=np.uint32)
-		clr = self.Colors[0:clr_num]
-		for i, (c1, c2) in enumerate(zip(clr, clr[-1:] + clr[:-1])):
-			for j in range(0, 100):
-				d = float(j)/100
-				pal[i*100+j] = avg_clr(c2,c1,d,225)
-			#c2 = c1
-		return pal	
-
-	def Draw(self):
-		if self.palette is None:
-			self.palette = self.make_palette(16)
-
-		pim = Render.SymmetryWall(self.Parameters, self.palette)
-		#self.SaveImage(pim)
-		self.photo = ImageTk.PhotoImage(pim)
-		self.canvas.create_image(0,0, image=self.photo, anchor='nw')
-
 
 	def SaveImage(self, pim):
 		if self.saveFlag.get():
