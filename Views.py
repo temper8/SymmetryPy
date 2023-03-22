@@ -50,7 +50,7 @@ class CanvasView(tk.Canvas):
 		self.palette = None
 
 	def update_palette(self):
-		self.palette_generator = self.GeneratePalette(5000)
+		self.palette_generator = PaletteGenerator()
 		self.palette = None
 		self.draw()
 
@@ -105,58 +105,49 @@ class PaletteGenerator():
 			#c2 = c1
 		return pal	
 		
-class MainView(tk.Frame):
+class ControlPanel(tk.Frame):
 	#Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
 	Vars = {}
 
-	def __init__(self, master, parameters) -> None:
+	def __init__(self, master, parameters, canvas_view) -> None:
 		super().__init__(master)
 		self.Parameters = parameters
+		self.canvas_view = canvas_view
 		w = self.Parameters["Width"]
 		h = self.Parameters["Height"]
 		#self.palette = None
 
-		self.columnconfigure(0, weight=1)    
-		self.rowconfigure(0, weight=1)
-
-		self.canvas_view = CanvasView(self, parameters)
-
-		self.canvas_view.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W, pady=4, padx=4)
-
-		frame_b = tk.Frame(self)
-		frame_b.grid(row=0, column=1)
-
 		self.saveFlag = tk.BooleanVar()
 		self.saveFlag.set(0)
-		chk1 = tk.Checkbutton(frame_b, text="Save",
+		chk1 = tk.Checkbutton(self, text="Save",
                  variable=self.saveFlag,
                  onvalue=1, offvalue=0)
 		chk1.pack(side = 'top')
 
-		Slider(frame_b, parameters['Time'], self.canvas_view.draw).pack()
-		Slider(frame_b, parameters['Radius'], self.canvas_view.draw).pack()
+		Slider(self, parameters['Time'], self.canvas_view.draw).pack()
+		Slider(self, parameters['Radius'], self.canvas_view.draw).pack()
 
 		
 
 
-		self.label_fps = tk.Label(master=frame_b, text="fps")
+		self.label_fps = tk.Label(master=self, text="fps")
 		self.label_fps.pack(side = 'top')
 
-		self.label_a = tk.Label(master=frame_b, text="time")
+		self.label_a = tk.Label(master=self, text="time")
 		self.label_a.pack(side = 'top')
 		
-		tk.Button(frame_b, text = " start ",  command = self.start).pack(side="top")
-		tk.Button(frame_b, text = " stop ",  command = self.stop).pack(side="top")
-		tk.Button(frame_b, text = " plus ",  command = self.plus).pack(side="top")
-		tk.Button(frame_b, text = " Color palette ",  command = self.canvas_view.update_palette).pack(side="top")
+		tk.Button(self, text = " start ",  command = self.start).pack(side="top")
+		tk.Button(self, text = " stop ",  command = self.stop).pack(side="top")
+		tk.Button(self, text = " plus ",  command = self.plus).pack(side="top")
+		tk.Button(self, text = " Color palette ",  command = self.canvas_view.update_palette).pack(side="top")
 		
 		#self.draw_init()
 		
 		self.RenderVar = tk.IntVar(name = "RenderType")
 		self.Vars[self.RenderVar._name] = self.RenderVar
 		self.RenderVar.set(0)
-		tk.Radiobutton(frame_b, text="IggDraw", variable=self.RenderVar, value = 0, command=lambda : self.update()).pack(side="top")
-		tk.Radiobutton(frame_b, text="Cairo", variable=self.RenderVar, value = 1, command=lambda : self.update()).pack(side="top")
+		tk.Radiobutton(self, text="IggDraw", variable=self.RenderVar, value = 0, command=lambda : self.update()).pack(side="top")
+		tk.Radiobutton(self, text="Cairo", variable=self.RenderVar, value = 1, command=lambda : self.update()).pack(side="top")
 
 
 		#self.spiro = Spiro(self.Parameters)  
