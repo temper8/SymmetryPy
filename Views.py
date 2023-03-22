@@ -113,9 +113,6 @@ class ControlPanel(tk.Frame):
 		super().__init__(master)
 		self.Parameters = parameters
 		self.canvas_view = canvas_view
-		w = self.Parameters["Width"]
-		h = self.Parameters["Height"]
-		#self.palette = None
 
 		self.saveFlag = tk.BooleanVar()
 		self.saveFlag.set(0)
@@ -126,9 +123,6 @@ class ControlPanel(tk.Frame):
 
 		Slider(self, parameters['Time'], self.canvas_view.draw).pack()
 		Slider(self, parameters['Radius'], self.canvas_view.draw).pack()
-
-		
-
 
 		self.label_fps = tk.Label(master=self, text="fps")
 		self.label_fps.pack(side = 'top')
@@ -141,14 +135,11 @@ class ControlPanel(tk.Frame):
 		tk.Button(self, text = " plus ",  command = self.plus).pack(side="top")
 		tk.Button(self, text = " Color palette ",  command = self.canvas_view.update_palette).pack(side="top")
 		
-		#self.draw_init()
-		
 		self.RenderVar = tk.IntVar(name = "RenderType")
 		self.Vars[self.RenderVar._name] = self.RenderVar
 		self.RenderVar.set(0)
 		tk.Radiobutton(self, text="IggDraw", variable=self.RenderVar, value = 0, command=lambda : self.update()).pack(side="top")
 		tk.Radiobutton(self, text="Cairo", variable=self.RenderVar, value = 1, command=lambda : self.update()).pack(side="top")
-
 
 		#self.spiro = Spiro(self.Parameters)  
 		self.canvas_view.draw()
