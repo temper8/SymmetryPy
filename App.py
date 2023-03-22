@@ -1,4 +1,4 @@
-from SymView import SymView
+import Views 
 
 class App:
 
@@ -33,4 +33,4 @@ class App:
         #h = self.Parameters["Height"]
         root.minsize(800, 450)
 
-        SymView(root, self.Parameters)
+        Views.MainView(root, self.Parameters).pack()

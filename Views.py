@@ -105,27 +105,26 @@ class PaletteGenerator():
 			#c2 = c1
 		return pal	
 		
-class SymView:
-
+class MainView(tk.Frame):
 	#Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
 	Vars = {}
 
-	def __init__(self, master, parameters):
+	def __init__(self, master, parameters) -> None:
+		super().__init__(master)
 		self.Parameters = parameters
 		w = self.Parameters["Width"]
 		h = self.Parameters["Height"]
 		#self.palette = None
 
-		frame_b = tk.Frame(master)
-		frame_b.grid(row=0, column=1)
+		self.columnconfigure(0, weight=1)    
+		self.rowconfigure(0, weight=1)
 
-		master.columnconfigure(0, weight=1)    
-		master.rowconfigure(0, weight=1)
-
-		self.canvas_view = CanvasView(master, parameters)
+		self.canvas_view = CanvasView(self, parameters)
 
 		self.canvas_view.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W, pady=4, padx=4)
 
+		frame_b = tk.Frame(self)
+		frame_b.grid(row=0, column=1)
 
 		self.saveFlag = tk.BooleanVar()
 		self.saveFlag.set(0)
