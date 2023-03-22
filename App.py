@@ -1,5 +1,6 @@
-import Views 
 import tkinter as tk
+from Views import CanvasView
+from Views import ControlPanel
 
 class App:
 
@@ -31,12 +32,12 @@ class App:
         root.title("Wave Generator")
 
         root.minsize(800, 550)
-        
+
         root.columnconfigure(0, weight=1)    
         root.rowconfigure(0, weight=1)
 
-        cv = Views.CanvasView(root, self.Parameters)
+        cv = CanvasView(root, self.Parameters)
         cv.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W, pady=4, padx=4)
 
-        mv = Views.ControlPanel(root, self.Parameters, cv)
-        mv.grid(row=0, column=1, sticky=tk.N + tk.S + tk.E + tk.W, pady=4, padx=4)
+        cp = ControlPanel(root, self.Parameters, cv)
+        cp.grid(row=0, column=1, sticky=tk.N + tk.S + tk.E + tk.W, pady=4, padx=4)
