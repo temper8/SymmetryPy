@@ -30,14 +30,18 @@ class Slider(ttk.Frame):
 		self.variable = v
 		self.var = tk.DoubleVar(name = v['name'])
 		self.var.trace_add('write', lambda var, indx, mode: self.update_var())
-		label = ttk.Label(master=self, text=v['label'])
-		label.pack(side = 'top')		
+		#label = ttk.Label(master=self, text=v['label'])
+		#label.pack(side = 'top')		
 		print(v['interval'])
 		slider = ttk.Scale( self, 
 		     variable = self.var, 
-			 orient = tk.HORIZONTAL, 
+			 orient = tk.HORIZONTAL,
+			 #sliderlength = 20,
+			 #width = 10,
+			 #tickinterval= (v['interval'][1]-v['interval'][0])/7,
 			 from_=v['interval'][0], 
 			 to=v['interval'][1], 
+			 label= v['label'],
 			 #resolution=v['interval'][2], 
 			 length = 250 )
 		slider.pack(anchor=tk.CENTER)
@@ -146,8 +150,8 @@ class ControlPanel(ttk.Frame):
                  onvalue=1, offvalue=0)
 		chk1.pack(side = 'top')
 
-		Slider(self, parameters['Time'], self.canvas_view.draw).pack()
-		Slider(self, parameters['Radius'], self.canvas_view.draw).pack()
+		Slider(self, parameters['Time'], self.canvas_view.draw).pack(pady=5)
+		Slider(self, parameters['Radius'], self.canvas_view.draw).pack(pady=5)
 
 		self.label_fps = ttk.Label(master=self, text="fps")
 		self.label_fps.pack(side = 'top')
