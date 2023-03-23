@@ -1,4 +1,5 @@
 import tkinter as tk
+import customtkinter as ctk
 import math
 import aggdraw
 import random
@@ -31,17 +32,18 @@ class Slider(tk.Frame):
 		v1 = v['interval'][1]
 		v0 = v['interval'][0]		
 		dv = v['interval'][2]
-		slider = tk.Scale( self, 
+		slider = ctk.CTkSlider( self, 
 		    variable = self.var, 
-			orient = tk.HORIZONTAL,
-            sliderlength = 20,
-            width = 10,
-            label=v['label'],		
-	    	tickinterval= (v1-v0)/5,	 
+			orientation = 'horizontal',
+            #sliderlength = 20,
+            width = 250,
+            #label=v['label'],		
+	    	#tickinterval= (v1-v0)/5,	 
 			from_= v0, 
 			to= v1, 
-			resolution= dv, 
-			length = 250 )
+			#resolution= dv, 
+			#length = 250 
+			)
 		slider.pack(anchor=tk.CENTER)
 
 
@@ -122,7 +124,7 @@ class RadioSwitcher(tk.Frame):
 		self.value = tk.StringVar()
 		self.value.set(items[0])
 		for item in items:
-			tk.Radiobutton(self, text=item, variable=self.value, value= item, command= self.update).pack(side= tk.LEFT, padx=5)
+			ctk.CTkRadioButton(self, text=item, variable=self.value, value= item, command= self.update).pack(side= tk.LEFT, padx=5)
 	
 	def update(self):
 		print(self.value.get())
@@ -141,13 +143,13 @@ class ControlPanel(tk.Frame):
 
 		self.saveFlag = tk.BooleanVar()
 		self.saveFlag.set(0)
-		chk1 = tk.Checkbutton(self, text="Save",
+		chk1 = ctk.CTkCheckBox(self, text="Save",
                  variable=self.saveFlag,
                  onvalue=1, offvalue=0)
-		chk1.pack(side = 'top')
+		chk1.pack(pady=5)
 
-		Slider(self, parameters['Time'], self.canvas_view.draw).pack()
-		Slider(self, parameters['Radius'], self.canvas_view.draw).pack()
+		Slider(self, parameters['Time'], self.canvas_view.draw).pack(pady=5)
+		Slider(self, parameters['Radius'], self.canvas_view.draw).pack(pady=5)
 
 		self.label_fps = tk.Label(master=self, text="fps")
 		self.label_fps.pack(side = 'top')
@@ -155,10 +157,10 @@ class ControlPanel(tk.Frame):
 		self.label_a = tk.Label(master=self, text="time")
 		self.label_a.pack(side = 'top')
 		
-		tk.Button(self, text = " start ",  command = self.start).pack(pady=5)
-		tk.Button(self, text = " stop ",  command = self.stop).pack(pady=5)
-		tk.Button(self, text = " plus ",  command = self.plus).pack(pady=5)
-		tk.Button(self, text = " Color palette ",  command = self.canvas_view.update_palette).pack(pady=5)
+		ctk.CTkButton(self, text = " start ",  command = self.start).pack(pady=5)
+		ctk.CTkButton(self, text = " stop ",  command = self.stop).pack(pady=5)
+		ctk.CTkButton(self, text = " plus ",  command = self.plus).pack(pady=5)
+		ctk.CTkButton(self, text = " Color palette ",  command = self.canvas_view.update_palette).pack(pady=5)
 		
 		rs = RadioSwitcher(self, ['IggDraw','Cairo'], command= self.update)
 		rs.pack(pady=5)
