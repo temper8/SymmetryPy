@@ -104,8 +104,23 @@ class PaletteGenerator():
 				pal[i*100+j] = avg_clr(c2,c1,d,225)
 			#c2 = c1
 		return pal	
-		
-class ControlPanel(tk.Frame):
+
+class RadioSwitcher(ttk.Frame):
+	def __init__(self, master, items, command= None) -> None:
+		super().__init__(master)
+		self.command = command
+		self.value = tk.StringVar()
+		self.value.set(items[0])
+		for item in items:
+			ttk.Radiobutton(self, text=item, variable=self.value, value= item, command= self.update).pack(side= ttk.LEFT, padx=5)
+	
+	def update(self):
+		print(self.value.get())
+		if self.command:
+			self.command()
+
+
+class ControlPanel(ttk.Frame):
 	#Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
 	Vars = {}
 
@@ -135,12 +150,8 @@ class ControlPanel(tk.Frame):
 		tk.Button(self, text = " plus ",  command = self.plus).pack(side="top")
 		tk.Button(self, text = " Color palette ",  command = self.canvas_view.update_palette).pack(side="top")
 		
-		self.RenderVar = tk.IntVar(name = "RenderType")
-		self.Vars[self.RenderVar._name] = self.RenderVar
-		self.RenderVar.set(0)
-		tk.Radiobutton(self, text="IggDraw", variable=self.RenderVar, value = 0, command=lambda : self.update()).pack(side="top")
-		tk.Radiobutton(self, text="Cairo", variable=self.RenderVar, value = 1, command=lambda : self.update()).pack(side="top")
-
+		rs = RadioSwitcher(self, ['IggDraw','Cairo'], command= self.update)
+		rs.pack(pady=5)
 		#self.spiro = Spiro(self.Parameters)  
 		self.canvas_view.draw()
 
