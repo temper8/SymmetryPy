@@ -139,12 +139,7 @@ class ControlPanel(tk.Frame):
 		self.Parameters = parameters
 		self.canvas_view = canvas_view
 
-		self.saveFlag = tk.BooleanVar()
-		self.saveFlag.set(0)
-		chk1 = tk.Checkbutton(self, text="Save",
-                 variable=self.saveFlag,
-                 onvalue=1, offvalue=0)
-		chk1.pack(side = 'top')
+
 
 		Slider(self, parameters['Time'], self.canvas_view.draw).pack()
 		Slider(self, parameters['Radius'], self.canvas_view.draw).pack()
@@ -162,6 +157,13 @@ class ControlPanel(tk.Frame):
 		
 		rs = RadioSwitcher(self, ['IggDraw','Cairo'], command= self.update)
 		rs.pack(pady=5)
+
+		self.save_flag = tk.BooleanVar()
+		self.save_flag.set(0)
+		chk1 = tk.Checkbutton(self, text="Save",
+                 variable=self.save_flag,
+                 onvalue=1, offvalue=0)
+		chk1.pack(side = 'top')
 		#self.spiro = Spiro(self.Parameters)  
 		self.canvas_view.draw()
 
