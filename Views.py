@@ -41,7 +41,7 @@ class Slider(ttk.Frame):
 			 #tickinterval= (v['interval'][1]-v['interval'][0])/7,
 			 from_=v['interval'][0], 
 			 to=v['interval'][1], 
-			 label= v['label'],
+			 #label= v['label'],
 			 #resolution=v['interval'][2], 
 			 length = 250 )
 		slider.pack(anchor=tk.CENTER)
