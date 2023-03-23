@@ -155,10 +155,10 @@ class ControlPanel(ttk.Frame):
 		self.label_a = ttk.Label(master=self, text="time")
 		self.label_a.pack(side = 'top')
 		
-		ttk.Button(self, text = " start ",  command = self.start).pack(side="top")
-		ttk.Button(self, text = " stop ",  command = self.stop).pack(side="top")
-		ttk.Button(self, text = " plus ",  command = self.plus).pack(side="top")
-		ttk.Button(self, text = " Color palette ", bootstyle="info-outline",  command = self.canvas_view.update_palette).pack(side="top")
+		ttk.Button(self, text = " start ",  command = self.start).pack(pady=2)
+		ttk.Button(self, text = " stop ",  command = self.stop).pack(pady=2)
+		ttk.Button(self, text = " plus ",  command = self.plus).pack(pady=2)
+		ttk.Button(self, text = " Color palette ", bootstyle="info-outline",  command = self.canvas_view.update_palette).pack(pady=5)
 		
 		rs = RadioSwitcher(self, ['IggDraw','Cairo'], command= self.update)
 		rs.pack(pady=5)
