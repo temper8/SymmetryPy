@@ -1,4 +1,6 @@
 import tkinter as tk
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 import math
 import aggdraw
 import random
@@ -14,7 +16,7 @@ def my_callback(var, indx, mode):
 	print(var)
 	#print("Traced variable {}".format(var.get()))
 
-class Slider(tk.Frame):
+class Slider(ttk.Frame):
 
 	def update_var(self):
 		print(self.var.get())		
@@ -28,9 +30,16 @@ class Slider(tk.Frame):
 		self.variable = v
 		self.var = tk.DoubleVar(name = v['name'])
 		self.var.trace_add('write', lambda var, indx, mode: self.update_var())
-		label = tk.Label(master=self, text=v['label'])
+		label = ttk.Label(master=self, text=v['label'])
 		label.pack(side = 'top')		
-		slider = tk.Scale( self, variable = self.var, orient = tk.HORIZONTAL, from_=v['interval'][0], to=v['interval'][1], resolution=v['interval'][2], length = 250 )
+		print(v['interval'])
+		slider = ttk.Scale( self, 
+		     variable = self.var, 
+			 orient = tk.HORIZONTAL, 
+			 from_=v['interval'][0], 
+			 to=v['interval'][1], 
+			 #resolution=v['interval'][2], 
+			 length = 250 )
 		slider.pack(anchor=tk.CENTER)
 
 
@@ -41,7 +50,7 @@ def avg_clr(c1, c2, d, alpha):
 	b = int(c1[2]*(1-d) + c2[2]*d)
 	return int.from_bytes(bytearray([r,g,b,alpha]), "big") 
 
-class CanvasView(tk.Canvas):
+class CanvasView(ttk.Canvas):
 	def __init__(self, master, parameters ) -> None:
 		super().__init__(master)
 		self.bind('<Configure>', self.resize)
@@ -105,7 +114,7 @@ class PaletteGenerator():
 			#c2 = c1
 		return pal	
 		
-class ControlPanel(tk.Frame):
+class ControlPanel(ttk.Frame):
 	#Parameters ={"Width": 720, "Height": 640, "Radius" : 350, "Time": 0.0, "Shift": 1.0}
 	Vars = {}
 
@@ -114,9 +123,9 @@ class ControlPanel(tk.Frame):
 		self.Parameters = parameters
 		self.canvas_view = canvas_view
 
-		self.saveFlag = tk.BooleanVar()
+		self.saveFlag = ttk.BooleanVar()
 		self.saveFlag.set(0)
-		chk1 = tk.Checkbutton(self, text="Save",
+		chk1 = ttk.Checkbutton(self, text="Save",
                  variable=self.saveFlag,
                  onvalue=1, offvalue=0)
 		chk1.pack(side = 'top')
@@ -124,22 +133,22 @@ class ControlPanel(tk.Frame):
 		Slider(self, parameters['Time'], self.canvas_view.draw).pack()
 		Slider(self, parameters['Radius'], self.canvas_view.draw).pack()
 
-		self.label_fps = tk.Label(master=self, text="fps")
+		self.label_fps = ttk.Label(master=self, text="fps")
 		self.label_fps.pack(side = 'top')
 
-		self.label_a = tk.Label(master=self, text="time")
+		self.label_a = ttk.Label(master=self, text="time")
 		self.label_a.pack(side = 'top')
 		
-		tk.Button(self, text = " start ",  command = self.start).pack(side="top")
-		tk.Button(self, text = " stop ",  command = self.stop).pack(side="top")
-		tk.Button(self, text = " plus ",  command = self.plus).pack(side="top")
-		tk.Button(self, text = " Color palette ",  command = self.canvas_view.update_palette).pack(side="top")
+		ttk.Button(self, text = " start ",  command = self.start).pack(side="top")
+		ttk.Button(self, text = " stop ",  command = self.stop).pack(side="top")
+		ttk.Button(self, text = " plus ",  command = self.plus).pack(side="top")
+		ttk.Button(self, text = " Color palette ", bootstyle="info-outline",  command = self.canvas_view.update_palette).pack(side="top")
 		
 		self.RenderVar = tk.IntVar(name = "RenderType")
 		self.Vars[self.RenderVar._name] = self.RenderVar
 		self.RenderVar.set(0)
-		tk.Radiobutton(self, text="IggDraw", variable=self.RenderVar, value = 0, command=lambda : self.update()).pack(side="top")
-		tk.Radiobutton(self, text="Cairo", variable=self.RenderVar, value = 1, command=lambda : self.update()).pack(side="top")
+		ttk.Radiobutton(self, text="IggDraw", variable=self.RenderVar, value = 0, command=lambda : self.update()).pack(side="top")
+		ttk.Radiobutton(self, text="Cairo", variable=self.RenderVar, value = 1, command=lambda : self.update()).pack(side="top")
 
 		#self.spiro = Spiro(self.Parameters)  
 		self.canvas_view.draw()

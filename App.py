@@ -1,4 +1,5 @@
-import tkinter as tk
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from Views import CanvasView
 from Views import ControlPanel
 
@@ -37,7 +38,7 @@ class App:
         root.rowconfigure(0, weight=1)
 
         cv = CanvasView(root, self.Parameters)
-        cv.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W, pady=4, padx=4)
+        cv.grid(row=0, column=0, sticky=ttk.N + ttk.S + ttk.E + ttk.W, pady=4, padx=4)
 
         cp = ControlPanel(root, self.Parameters, cv)
-        cp.grid(row=0, column=1, sticky=tk.N + tk.S + tk.E + tk.W, pady=4, padx=4)
+        cp.grid(row=0, column=1, sticky=ttk.N + ttk.S + ttk.E + ttk.W, pady=4, padx=4)
