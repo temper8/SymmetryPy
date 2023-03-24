@@ -26,7 +26,11 @@ class Slider(tk.Frame):
 		super().__init__(master)
 		self.call_back = call_back
 		self.variable = v
-		self.var = tk.DoubleVar(name = v['name'])
+		if v['type'] =='double':
+			self.var = tk.DoubleVar()
+		else:
+			self.var = tk.IntVar()			
+		self.var.set(v['value'])
 		self.var.trace_add('write', lambda var, indx, mode: self.update_var())
 		v1 = v['interval'][1]
 		v0 = v['interval'][0]		
@@ -64,6 +68,10 @@ class CanvasView(tk.Canvas):
 		self.palette = None
 		self.draw()
 
+	def clear_palette(self):
+		self.palette = None
+		self.draw()
+
 	def resize(self, event):
 		print('canvas_resize')
 		w = event.width
@@ -75,7 +83,9 @@ class CanvasView(tk.Canvas):
 
 	def draw(self):
 		if self.palette is None:
-			self.palette = self.palette_generator.make_palette(16)
+			pal_size = self.Parameters['colors_number']['value']
+			pal_shift = self.Parameters['colors_shift']['value']
+			self.palette = self.palette_generator.make_palette(pal_shift, pal_size)
 
 		pim = Render.SymmetryWall(self.Parameters, self.palette)
 		#self.SaveImage(pim)
@@ -83,12 +93,12 @@ class CanvasView(tk.Canvas):
 		self.create_image(0,0, image=self.photo, anchor='nw')
 
 class PaletteGenerator():
-	COLORS_NUMBER = 5000
+	COLORS_NUMBER = 500
 	def __init__(self) -> None:
 		self.Colors = self.GeneratePalette(self.COLORS_NUMBER)
 
 	def GeneratePalette(self, clrs_number):
-		bi = 64.0/256
+		bi = 128.0/256
 		Colors = []
 		for i in range(0, clrs_number):
 			alpha = 30
@@ -104,14 +114,16 @@ class PaletteGenerator():
 			Colors.append((r, g, b))
 		return Colors
 	
-	def make_palette(self, clr_num):
-		N = clr_num * 100
+	def make_palette(self, clr_shift, clr_num):
+		step = 50
+		N = clr_num * step
 		pal = np.zeros(N, dtype=np.uint32)
-		clr = self.Colors[0:clr_num]
+		clr = self.Colors[clr_shift:clr_shift+clr_num-1]
+		clr.append(self.Colors[clr_shift])
 		for i, (c1, c2) in enumerate(zip(clr, clr[-1:] + clr[:-1])):
-			for j in range(0, 100):
-				d = float(j)/100
-				pal[i*100+j] = avg_clr(c2,c1,d,225)
+			for j in range(0, step):
+				d = float(j)/step
+				pal[i*step+j] = avg_clr(c2,c1,d,225)
 			#c2 = c1
 		return pal	
 
@@ -143,6 +155,9 @@ class ControlPanel(tk.Frame):
 
 		Slider(self, parameters['Time'], self.canvas_view.draw).pack()
 		Slider(self, parameters['Radius'], self.canvas_view.draw).pack()
+		Slider(self, parameters['max_colors_number'], self.canvas_view.draw).pack()
+		Slider(self, parameters['colors_number'], self.canvas_view.clear_palette).pack()		
+		Slider(self, parameters['colors_shift'], self.canvas_view.clear_palette).pack()		
 
 		self.label_fps = tk.Label(master=self, text="fps")
 		self.label_fps.pack(side = 'top')

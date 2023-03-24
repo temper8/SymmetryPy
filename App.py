@@ -25,7 +25,31 @@ class App:
             'type' : 'double',
             'label' : 'Time',
             'interval' : [0.0, 1.0, 0.01]
-        }
+        },
+        "max_colors_number" : {
+            'name' : 'max_colors_number',
+            'widget' : 'slider',
+            'value' : 500,
+            'type' : 'int',
+            'label' : 'Max Colors Number',
+            'interval' : [10, 1000, 1]
+        },
+        "colors_number" : {
+            'name' : 'colors_number',
+            'widget' : 'slider',
+            'value' : 5,
+            'type' : 'int',
+            'label' : 'Colors Number',
+            'interval' : [1, 1000, 1]
+        },
+        "colors_shift" : {
+            'name' : 'colors_shift',
+            'widget' : 'slider',
+            'value' : 10,
+            'type' : 'int',
+            'label' : 'Colors Shift',
+            'interval' : [1, 1000, 1]
+        }          
         }
 
     def __init__(self, root):
